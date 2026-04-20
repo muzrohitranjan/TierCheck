@@ -4,7 +4,8 @@
   "description": "Backend API for TierCheck app",
   "main": "server.js",
   "scripts": {
-"start":"node server.js","heroku-postbuild":"npm run seed"
+    "start": "node server.js",
+    "heroku-postbuild": "npm run seed",
     "dev": "nodemon server.js",
     "seed": "node seed.js"
   },
