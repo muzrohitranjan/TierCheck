@@ -8,6 +8,7 @@ const College = require('./models/College');
 const Company = require('./models/Company');
 const Job = require('./models/Job');
 const Submission = require('./models/Submission');
+const { seedDatabase } = require('./seed');
 
 const app = express();
 const PORT = process.env.PORT;
@@ -19,7 +20,15 @@ app.use(express.json());
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected'))
+  .then(async () => {
+    console.log('✅ MongoDB connected');
+    const seedResult = await seedDatabase();
+    if (seedResult.changed) {
+      console.log('🌱 Database was empty. Seeded starter data:', seedResult.inserted);
+    } else {
+      console.log('ℹ️ Database already contained data. No seeding needed.');
+    }
+  })
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // Global error handler
@@ -93,4 +102,3 @@ app.get('/', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on 0.0.0.0:${PORT}`);
 });
-
