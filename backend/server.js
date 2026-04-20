@@ -14,13 +14,27 @@ const PORT = process.env.PORT;
 
 // Middleware
 app.use(helmet());
-app.use(cors({ origin: 'http://localhost:5500' })); // Adjust for live server
+app.use(cors({ origin: true })); // Allow all origins for API (update with specific Railway domain if needed)
 app.use(express.json());
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB connected'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+// PORT validation
+if (!PORT) {
+  console.error('❌ No PORT environment variable set');
+  process.exit(1);
+}
+console.log(`📡 PORT detected: ${PORT}`);
+
 
 // Routes
 app.get('/api/colleges', async (req, res) => {
@@ -77,5 +91,6 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server running on 0.0.0.0:${PORT}`);
 });
+
