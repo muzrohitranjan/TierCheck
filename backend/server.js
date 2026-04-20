@@ -10,7 +10,7 @@ const Job = require('./models/Job');
 const Submission = require('./models/Submission');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 
 // Middleware
 app.use(helmet());

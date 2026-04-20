@@ -1,13 +1,12 @@
-# Railway Deployment TODO
+# Railway Strict PORT Fix TODO
 
-✅ Step 1: backend/server.js already correctly configured (single app.listen(PORT, '0.0.0.0'))
+✅ Step 1: Plan approved - Edit backend/server.js (remove PORT fallback to 3001)
 
 **Remaining Steps:**
-- [ ] Step 2: Run git add/commit/push
+- [ ] Step 2: Edit backend/server.js → `const PORT = process.env.PORT;`
+- [ ] Step 3: Git commit/push
   - `git add .`
-  - `git commit -m "fix: correct server listen for Railway"`
+  - `git commit -m \"fix: strict process.env.PORT for Railway (no fallback)\""
   - `git push`
-- [ ] Step 3: Redeploy to Railway
-  - `cd backend`
-  - `railway up`
-
+- [ ] Step 4: `cd backend && railway up`
+- [ ] Step 5: Verify Railway logs (dynamic PORT, app accessible)
