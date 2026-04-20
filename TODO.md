@@ -1,11 +1,42 @@
-# Frontend Prod Backend Fix Task
+# TierCheck Database Seeding - Progress Tracker
 
-## Steps:
-- [x] Step 1: Analyze API files (data-api.js central)
-- [x] Step 2: Confirm plan (hardcode prod URL, error handling)
-- [ ] Step 3: Edit data-api.js → API_BASE='https://tiercheck-production.up.railway.app/api'
-- [ ] Step 4: Test: Hard refresh, search college/companies → real data loads
-- [ ] Step 5: Deploy static frontend (vercel/netlify)
-- [ ] Step 6: Verify no "Loading..." stuck, console clean
+## Current Status: ✅ READY FOR PRODUCTION SEED
+
+**✅ Step 1:** TODO.md created  
+**✅ Step 2:** `backend/package.json` updated with `postdeploy: \"npm run seed\"`  
+**⚠️  Step 3:** Local seed test blocked (Windows CMD && issue)  
+**⏳ Steps 4-9:** Pending Railway execution  
+
+**🚀 IMMEDIATE PRODUCTION FIX:**
+
+Run these **in your terminal**:
+
+```bash
+# PRODUCTION SEED (30 seconds fix)
+railway shell
+npm run seed
+```
+
+**VERIFY (browser):**
+- https://tiercheck-production.up.railway.app/api/companies (expect 5 companies)
+- https://tiercheck-production.up.railway.app/api/health (counts >0)
+
+**Forever Fix:**
+```bash
+git add .
+git commit -m \"fix: seed postdeploy hook for Railway\"
+git push
+```
+
+**Expected Data:**
+| Colleges | Companies | Jobs |
+|----------|-----------|------|
+| 10       | 5         | 5    |
+
+## Quick Commands:
+```
+railway shell && npm run seed
+curl https://tiercheck-production.up.railway.app/api/companies
+```
 
 
