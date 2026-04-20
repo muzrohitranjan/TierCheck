@@ -9,7 +9,12 @@ function worthLabel(w) {
 }
 
 async function renderJobs(jobs) {
-  document.getElementById('jobsList').innerHTML = jobs.map(j => `
+  const loading = document.getElementById('loading');
+  const jobsList = document.getElementById('jobsList');
+
+  if (loading) loading.style.display = 'none';
+
+  jobsList.innerHTML = jobs.map(j => `
     <div class="job-card">
       <div class="job-info">
         <h3>${j.role} — ${j.company}</h3>

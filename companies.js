@@ -3,7 +3,11 @@ function toggleMenu() {
 }
 
 async function renderCompanies(companies) {
+  const loading = document.getElementById('loading');
   const grid = document.getElementById('companiesGrid');
+
+  if (loading) loading.style.display = 'none';
+
   grid.innerHTML = companies.map(c => `
     <div class="company-detail-card">
       <h3>${c.name}</h3>
