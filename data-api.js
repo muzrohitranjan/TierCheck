@@ -1,4 +1,4 @@
-const API_BASE = process.env.API_BASE || 'http://localhost:3001/api';
+const API_BASE = 'https://tiercheck-production.up.railway.app/api';
 
 const apiFetch = async (endpoint, options = {}) => {
   try {
@@ -9,7 +9,16 @@ const apiFetch = async (endpoint, options = {}) => {
     if (!res.ok) throw new Error(`API error: ${res.status}`);
     return await res.json();
   } catch (err) {
-    console.error('API fetch error:', err);
+    console.error(`API fetch failed for ${endpoint}:`, err);
+    // Fallback to static data if available
+    if (endpoint === '/colleges' && window.colleges) {
+      return window.colleges.slice(0,20).map(c => ({
+        ...c,
+        tierInfo: window.tierInfo?.[c.tier] || window.tierInfo?.[3]
+      }));
+    }
+    if (endpoint === '/companies' && window.companies) return window.companies;
+    if (endpoint === '/jobs' && window.jobs) return window.jobs;
     return [];
   }
 };
@@ -28,3 +37,4 @@ const fetchJobs = async (worth = 'all') => apiFetch(`/jobs?worth=${worth}`);
 const submitData = async (data) => apiFetch('/submit', { method: 'POST', body: JSON.stringify(data) });
 
 window.api = { fetchColleges, fetchCompanies, fetchJobs, submitData };
+
