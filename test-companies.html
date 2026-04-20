@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Companies Data</title>
+</head>
+<body>
+  <h1>Companies Data Test</h1>
+  <div id="result"></div>
+
+  <script src="data.js"></script>
+  <script>
+    const result = document.getElementById('result');
+    
+    setTimeout(() => {
+      if (typeof companies !== 'undefined') {
+        result.innerHTML = `<h2 style="color: green;">✓ Companies loaded! Total: ${companies.length}</h2>`;
+        result.innerHTML += '<h3>First 5 companies:</h3>';
+        result.innerHTML += '<ul>';
+        companies.slice(0, 5).forEach(c => {
+          result.innerHTML += `<li>${c.name} - ${c.badge}</li>`;
+        });
+        result.innerHTML += '</ul>';
+      } else {
+        result.innerHTML = '<h2 style="color: red;">✗ Companies NOT loaded</h2>';
+      }
+    }, 100);
+  </script>
+</body>
+</html>

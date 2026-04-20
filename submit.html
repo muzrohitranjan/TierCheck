@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Submit Data — TierCheck</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo" onclick="window.location.href='index.html'">
+      <span class="logo-tc">TC</span>
+      <span class="logo-text">TierCheck</span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="college.html">College Search</a></li>
+      <li><a href="companies.html">Companies</a></li>
+      <li><a href="jobs.html">Jobs</a></li>
+      <li><a href="submit.html" class="active">Submit Data</a></li>
+    </ul>
+    <div class="nav-hamburger" onclick="toggleMenu()">☰</div>
+  </nav>
+
+  <div class="page-header">
+    <h1>📊 Submit <span class="yellow">Your Data</span></h1>
+    <p>Help other students by sharing your placement experience. All data is anonymous & reviewed before publishing.</p>
+  </div>
+
+  <div class="submit-section">
+    <form class="submit-form" onsubmit="submitData(event)">
+      <div class="form-group">
+        <label>Your College Name</label>
+        <input type="text" id="s_college" placeholder="e.g. IIT Bombay" required/>
+      </div>
+      <div class="form-group">
+        <label>College Tier</label>
+        <select id="s_tier" required>
+          <option value="" disabled selected>Select your tier</option>
+          <option value="1">Tier 1 — IIT / IISc / BITS</option>
+          <option value="2">Tier 2 — NIT / IIIT / DTU</option>
+          <option value="3">Tier 3 — State / Private Colleges</option>
+          <option value="4">Tier 4 — Other Colleges</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Company Name</label>
+        <input type="text" id="s_company" placeholder="e.g. Google" required/>
+      </div>
+      <div class="form-group">
+        <label>Role / Position</label>
+        <input type="text" id="s_role" placeholder="e.g. SDE, Data Analyst, Intern" required/>
+      </div>
+      <div class="form-group">
+        <label>Year of Placement</label>
+        <select id="s_year" required>
+          <option value="" disabled selected>Select year</option>
+          <option>2024</option>
+          <option>2023</option>
+          <option>2022</option>
+          <option>2021</option>
+          <option>2020</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Placement Type</label>
+        <select id="s_type" required>
+          <option value="" disabled selected>Select type</option>
+          <option>Campus Placement</option>
+          <option>Off-Campus</option>
+          <option>Internship</option>
+          <option>Referral</option>
+        </select>
+      </div>
+      <button type="submit" class="submit-btn">Submit Data 🚀</button>
+      <div id="successMsg" class="success-msg hidden">✅ Thank you! Your data has been submitted successfully and stored. It helps thousands of students!</div>
+    </form>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-logo"><span class="logo-tc">TC</span> TierCheck</div>
+    <p>Know Your Chances. Save Your Time.</p>
+    <p class="footer-small">© 2024 TierCheck. All rights reserved.</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="data-api.js"></script>
+  <script src="submit.js"></script>
+</body>
+</html>

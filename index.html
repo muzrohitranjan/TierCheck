@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TierCheck — Know Your Chances. Save Your Time.</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-logo" onclick="window.location.href='index.html'">
+      <span class="logo-tc">TC</span>
+      <span class="logo-text">TierCheck</span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="college.html">College Search</a></li>
+      <li><a href="companies.html">Companies</a></li>
+      <li><a href="jobs.html">Jobs</a></li>
+      <li><a href="submit.html">Submit Data</a></li>
+    </ul>
+    <div class="nav-hamburger" onclick="toggleMenu()">☰</div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Know Your Chances.<br/><span class="yellow">Save Your Time.</span></h1>
+      <p class="hero-sub">Stop applying blindly. TierCheck shows you which companies hire from your college tier — backed by real data.</p>
+      <div class="search-box">
+        <input type="text" id="collegeInput" placeholder="Search your college... e.g. IIT Bombay" oninput="liveSearch()" autocomplete="off"/>
+        <button onclick="searchCollege()">Check Tier</button>
+        <div id="suggestions" class="suggestions hidden"></div>
+      </div>
+      <div id="tierResult" class="tier-result hidden"></div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><h2>500+</h2><p>Companies</p></div>
+      <div class="stat"><h2>1200+</h2><p>Colleges</p></div>
+      <div class="stat"><h2>50K+</h2><p>Data Points</p></div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works">
+    <h2>How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Search Your College</h3>
+        <p>Enter your college name and instantly find out your tier.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>See Hiring Patterns</h3>
+        <p>Discover which companies hire from your tier with real data.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Apply Smartly</h3>
+        <p>Stop wasting time. Apply only where you actually fit.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOP COMPANIES -->
+  <section class="top-companies">
+    <h2>Top Companies & Their Hiring Tiers</h2>
+    <div class="company-cards">
+      <div class="company-card" onclick="window.location.href='companies.html'">
+        <div class="company-name">Google</div>
+        <div class="tier-badge t1">Mostly Tier 1</div>
+        <div class="bars">
+          <div class="bar-row"><span>T1</span><div class="bar-fill t1-fill" style="width:80%"></div><span>80%</span></div>
+          <div class="bar-row"><span>T2</span><div class="bar-fill t2-fill" style="width:15%"></div><span>15%</span></div>
+          <div class="bar-row"><span>T3</span><div class="bar-fill t3-fill" style="width:5%"></div><span>5%</span></div>
+        </div>
+      </div>
+      <div class="company-card" onclick="window.location.href='companies.html'">
+        <div class="company-name">Microsoft</div>
+        <div class="tier-badge t2">Tier 1 & 2</div>
+        <div class="bars">
+          <div class="bar-row"><span>T1</span><div class="bar-fill t1-fill" style="width:65%"></div><span>65%</span></div>
+          <div class="bar-row"><span>T2</span><div class="bar-fill t2-fill" style="width:30%"></div><span>30%</span></div>
+          <div class="bar-row"><span>T3</span><div class="bar-fill t3-fill" style="width:5%"></div><span>5%</span></div>
+        </div>
+      </div>
+      <div class="company-card" onclick="window.location.href='companies.html'">
+        <div class="company-name">Amazon</div>
+        <div class="tier-badge t2">Tier 1 & 2</div>
+        <div class="bars">
+          <div class="bar-row"><span>T1</span><div class="bar-fill t1-fill" style="width:60%"></div><span>60%</span></div>
+          <div class="bar-row"><span>T2</span><div class="bar-fill t2-fill" style="width:35%"></div><span>35%</span></div>
+          <div class="bar-row"><span>T3</span><div class="bar-fill t3-fill" style="width:5%"></div><span>5%</span></div>
+        </div>
+      </div>
+      <div class="company-card" onclick="window.location.href='companies.html'">
+        <div class="company-name">Infosys</div>
+        <div class="tier-badge t3">Open for All</div>
+        <div class="bars">
+          <div class="bar-row"><span>T1</span><div class="bar-fill t1-fill" style="width:20%"></div><span>20%</span></div>
+          <div class="bar-row"><span>T2</span><div class="bar-fill t2-fill" style="width:35%"></div><span>35%</span></div>
+          <div class="bar-row"><span>T3</span><div class="bar-fill t3-fill" style="width:45%"></div><span>45%</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-logo"><span class="logo-tc">TC</span> TierCheck</div>
+    <p>Know Your Chances. Save Your Time.</p>
+    <p class="footer-small">© 2024 TierCheck. All rights reserved.</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="data-api.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

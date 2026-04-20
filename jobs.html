@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jobs — TierCheck</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo" onclick="window.location.href='index.html'">
+      <span class="logo-tc">TC</span>
+      <span class="logo-text">TierCheck</span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="college.html">College Search</a></li>
+      <li><a href="companies.html">Companies</a></li>
+      <li><a href="jobs.html" class="active">Jobs</a></li>
+      <li><a href="submit.html">Submit Data</a></li>
+    </ul>
+    <div class="nav-hamburger" onclick="toggleMenu()">☰</div>
+  </nav>
+
+  <div class="page-header">
+    <h1>💼 Job <span class="yellow">Listings</span></h1>
+    <p>Every job shows which tier it's for — so you know if it's worth applying</p>
+  </div>
+
+  <div class="jobs-section">
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all" onclick="filterJobs('all', this)">All Jobs</button>
+      <button class="filter-btn" data-filter="yes" onclick="filterJobs('yes', this)">✅ Worth Applying</button>
+      <button class="filter-btn" data-filter="maybe" onclick="filterJobs('maybe', this)">⚠️ Maybe</button>
+      <button class="filter-btn" data-filter="no" onclick="filterJobs('no', this)">❌ Likely Not</button>
+    </div>
+    <div class="loading" id="loading">Loading jobs...</div>
+    <div class="jobs-list" id="jobsList"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-logo"><span class="logo-tc">TC</span> TierCheck</div>
+    <p>Know Your Chances. Save Your Time.</p>
+    <p class="footer-small">© 2024 TierCheck. All rights reserved.</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="data-api.js"></script>
+  <script src="jobs.js"></script>
+</body>
+</html>

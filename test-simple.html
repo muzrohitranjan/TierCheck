@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Companies Load</title>
+  <style>
+    body { background: #0d0d2b; color: #fff; font-family: Arial; padding: 20px; }
+    #status { font-size: 18px; margin: 20px 0; padding: 20px; background: #1a1a2e; border-radius: 4px; }
+    #list { margin: 20px 0; }
+    .company { padding: 10px; background: #16213e; margin: 5px 0; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Simple Data Test</h1>
+  <div id="status">Loading...</div>
+  <div id="list"></div>
+
+  <script src="data.js?v=157-simple-test"></script>
+  <script>
+    function testAndDisplay() {
+      const status = document.getElementById('status');
+      const list = document.getElementById('list');
+      
+      console.log('TEST: typeof companies =', typeof companies);
+      console.log('TEST: companies in window =', 'companies' in window);
+      
+      if (typeof window.companies === 'undefined') {
+        status.innerHTML = '✗ FAILED: companies is undefined';
+        console.error('companies not found in window');
+        return;
+      }
+      
+      if (!Array.isArray(window.companies)) {
+        status.innerHTML = `✗ FAILED: companies is not array (${typeof window.companies})`;
+        return;
+      }
+      
+      if (window.companies.length === 0) {
+        status.innerHTML = '✗ FAILED: companies array is empty';
+        return;
+      }
+      
+      status.innerHTML = `✓ SUCCESS: ${window.companies.length} companies loaded`;
+      
+      // Show first 5
+      list.innerHTML = '<h3>First 5 Companies:</h3>';
+      window.companies.slice(0, 5).forEach(c => {
+        list.innerHTML += `<div class="company"><strong>${c.name}</strong> - ${c.badge}</div>`;
+      });
+    }
+    
+    // Try immediately
+    setTimeout(testAndDisplay, 100);
+  </script>
+</body>
+</html>

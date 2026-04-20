@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>College Search — TierCheck</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo" onclick="window.location.href='index.html'">
+      <span class="logo-tc">TC</span>
+      <span class="logo-text">TierCheck</span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="college.html" class="active">College Search</a></li>
+      <li><a href="companies.html">Companies</a></li>
+      <li><a href="jobs.html">Jobs</a></li>
+      <li><a href="submit.html">Submit Data</a></li>
+    </ul>
+    <div class="nav-hamburger" onclick="toggleMenu()">&#9776;</div>
+  </nav>
+
+  <div class="page-header">
+    <h1>🎓 College <span class="yellow">Tier Finder</span></h1>
+    <p>Search your college and instantly know your tier & which companies hire from you</p>
+  </div>
+
+  <div class="college-section">
+    <div class="college-search-big" style="position:relative;">
+      <input type="text" id="collegeInput" placeholder="Type your college name..." oninput="liveSearchCollege()" autocomplete="off"/>
+      <button onclick="searchCollegePage()">Find Tier</button>
+      <div id="suggestions" class="suggestions hidden"></div>
+    </div>
+
+    <div id="collegeResult" class="hidden"></div>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    function toggleMenu() {
+      document.getElementById('navLinks').classList.toggle('open');
+    }
+
+    const uniqueColleges = colleges.filter((c, i, arr) =>
+      arr.findIndex(x => x.name.toLowerCase() === c.name.toLowerCase()) === i
+    );
+
+    function liveSearchCollege() {
+      const input = document.getElementById('collegeInput').value.toLowerCase();
+      const suggestionsBox = document.getElementById('suggestions');
+      if (!input || input.length < 2) { suggestionsBox.classList.add('hidden'); return; }
+      const matches = uniqueColleges.filter(c => c.name.toLowerCase().includes(input)).slice(0, 6);
+      if (matches.length === 0) { suggestionsBox.classList.add('hidden'); return; }
+      suggestionsBox.innerHTML = matches.map(c =>
+        `<div data-name="${c.name.replace(/"/g, '&quot;')}" onclick="selectCollege(this.dataset.name)">${c.name}</div>`
+      ).join('');
+      suggestionsBox.classList.remove('hidden');
+    }
+
+    function selectCollege(name) {
+      document.getElementById('collegeInput').value = name;
+      document.getElementById('suggestions').classList.add('hidden');
+      searchCollegePage();
+    }
+
+    function searchCollegePage() {
+      const input = document.getElementById('collegeInput').value.trim().toLowerCase();
+      const resultDiv = document.getElementById('collegeResult');
+      if (!input) return;
+      const found = uniqueColleges.find(c => c.name.toLowerCase().includes(input));
+      if (!found) {
+        resultDiv.className = 'college-result-box';
+        resultDiv.innerHTML = `<h2>College not found</h2><p>Try a different name or spelling.</p>`;
+        resultDiv.classList.remove('hidden');
+        return;
+      }
+      const info = tierInfo[found.tier];
+      const companyTags = info.companies.map(c =>
+        `<span class="mini-company-tag" onclick="window.location.href='companies.html'">${c}</span>`
+      ).join('');
+      resultDiv.className = 'college-result-box';
+      resultDiv.innerHTML = `
+        <h2>${found.name}</h2>
+        <div class="big-tier">${info.label}</div>
+        <p>${info.desc}</p>
+        <div class="companies-for-tier">
+          <h3>Companies that hire from your tier:</h3>
+          <div class="mini-company-list">${companyTags}</div>
+        </div>
+      `;
+      resultDiv.classList.remove('hidden');
+    }
+
+    document.getElementById('collegeInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') searchCollegePage();
+    });
+  </script>
+</body>
+</html>

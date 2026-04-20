@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Companies Test — TierCheck</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <div class="companies-section">
+    <div class="filter-bar">
+      <button class="filter-btn active">All</button>
+      <button class="filter-btn">Tier 1 Focus</button>
+      <button class="filter-btn">Tier 1 & 2</button>
+      <button class="filter-btn">Open for All</button>
+    </div>
+    <div class="companies-grid" id="companiesGrid"></div>
+  </div>
+
+  <script>
+    const companies = [
+      {
+        name: "Google", badge: "Mostly Tier 1", badgeClass: "t1",
+        t1: 80, t2: 15, t3: 5, t4: 0,
+        roles: [
+          { role: "SDE", tier: "Tier 1 Only" },
+          { role: "Data Analyst", tier: "Tier 1 & 2" },
+          { role: "Intern", tier: "Tier 1 & 2" }
+        ]
+      },
+      {
+        name: "Microsoft", badge: "Tier 1 & 2", badgeClass: "t2",
+        t1: 65, t2: 30, t3: 5, t4: 0,
+        roles: [
+          { role: "SDE", tier: "Tier 1 & 2" },
+          { role: "PM", tier: "Tier 1 Only" },
+          { role: "Intern", tier: "Tier 1 & 2" }
+        ]
+      },
+      {
+        name: "Amazon", badge: "Tier 1 & 2", badgeClass: "t2",
+        t1: 60, t2: 35, t3: 5, t4: 0,
+        roles: [
+          { role: "SDE", tier: "Tier 1 & 2" },
+          { role: "Operations", tier: "Tier 2 & 3" },
+          { role: "Intern", tier: "Tier 1 & 2" }
+        ]
+      }
+    ];
+
+    const grid = document.getElementById('companiesGrid');
+    grid.innerHTML = companies.map(c => `
+      <div class="company-detail-card">
+        <h3>${c.name}</h3>
+        <div class="tier-badge ${c.badgeClass}">${c.badge}</div>
+        <div class="bars" style="margin-top:14px;">
+          <div class="bar-row"><span>T1</span><div class="bar-fill t1-fill" style="width:${c.t1}%"></div><span>${c.t1}%</span></div>
+          <div class="bar-row"><span>T2</span><div class="bar-fill t2-fill" style="width:${c.t2}%"></div><span>${c.t2}%</span></div>
+          <div class="bar-row"><span>T3</span><div class="bar-fill t3-fill" style="width:${c.t3}%"></div><span>${c.t3}%</span></div>
+          <div class="bar-row"><span>T4</span><div class="bar-fill t4-fill" style="width:${c.t4}%"></div><span>${c.t4}%</span></div>
+        </div>
+        <div class="role-breakdown">
+          <h4>Role-wise Breakdown:</h4>
+          ${c.roles.map(r => `
+            <div class="role-row">
+              <span>${r.role}</span>
+              <span>${r.tier}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    console.log('Test page: Rendered', companies.length, 'companies');
+  </script>
+</body>
+</html>

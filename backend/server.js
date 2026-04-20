@@ -1,0 +1,81 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const mongoose = require('mongoose');
+
+const College = require('./models/College');
+const Company = require('./models/Company');
+const Job = require('./models/Job');
+const Submission = require('./models/Submission');
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+// Middleware
+app.use(helmet());
+app.use(cors({ origin: 'http://localhost:5500' })); // Adjust for live server
+app.use(express.json());
+
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.error('❌ MongoDB connection error:', err));
+
+// Routes
+app.get('/api/colleges', async (req, res) => {
+  try {
+    const { search } = req.query;
+    const query = search 
+      ? { name: { $regex: search, $options: 'i' } }
+      : {};
+    const colleges = await College.find(query).limit(20).select('name tier');
+    res.json(colleges);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/companies', async (req, res) => {
+  try {
+    const { filter } = req.query;
+    let companies;
+    if (filter === 't1' || filter === 't2' || filter === 't3') {
+      companies = await Company.find({ badgeClass: filter });
+    } else {
+      companies = await Company.find();
+    }
+    res.json(companies);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/jobs', async (req, res) => {
+  try {
+    const { worth } = req.query;
+    const query = worth && worth !== 'all' ? { worth } : {};
+    const jobs = await Job.find(query);
+    res.json(jobs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/submit', async (req, res) => {
+  try {
+    const submission = new Submission(req.body);
+    await submission.save();
+    res.json({ message: 'Submission received successfully!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/', (req, res) => {
+  res.json({ message: 'TierCheck Backend API - Ready!' });
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});

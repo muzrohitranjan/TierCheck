@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Companies — TierCheck</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo" onclick="window.location.href='index.html'">
+      <span class="logo-tc">TC</span>
+      <span class="logo-text">TierCheck</span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="college.html">College Search</a></li>
+      <li><a href="companies.html" class="active">Companies</a></li>
+      <li><a href="jobs.html">Jobs</a></li>
+      <li><a href="submit.html">Submit Data</a></li>
+    </ul>
+    <div class="nav-hamburger" onclick="toggleMenu()">&#9776;</div>
+  </nav>
+
+  <div class="page-header">
+    <h1>🏢 Company <span class="yellow">Hiring Tiers</span></h1>
+    <p>See which tier each company hires from — with role-wise breakdown</p>
+  </div>
+
+  <div class="companies-section">
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterCompanies('all', this)">All</button>
+      <button class="filter-btn" onclick="filterCompanies('t1', this)">Tier 1 Focus</button>
+      <button class="filter-btn" onclick="filterCompanies('t2', this)">Tier 1 & 2</button>
+      <button class="filter-btn" onclick="filterCompanies('t3', this)">Open for All</button>
+    </div>
+    <div class="companies-grid" id="companiesGrid"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-logo"><span class="logo-tc">TC</span> TierCheck</div>
+    <p>Know Your Chances. Save Your Time.</p>
+    <p class="footer-small">© 2024 TierCheck. All rights reserved.</p>
+  </footer>
+
+  <script src="data.js?v=157companies-full"></script>
+  <script>
+    function toggleMenu() {
+      document.getElementById('navLinks').classList.toggle('open');
+    }
+
+    function renderCompanies(list) {
+      const grid = document.getElementById('companiesGrid');
+      if (!grid) return;
+      grid.innerHTML = list.map(c => `
+        <div class="company-detail-card">
+          <h3>${c.name}</h3>
+          <div class="tier-badge ${c.badgeClass}">${c.badge}</div>
+          <div class="bars" style="margin-top:14px;">
+            <div class="bar-row"><span>T1</span><div class="bar-fill t1-fill" style="width:${c.t1}%"></div><span>${c.t1}%</span></div>
+            <div class="bar-row"><span>T2</span><div class="bar-fill t2-fill" style="width:${c.t2}%"></div><span>${c.t2}%</span></div>
+            <div class="bar-row"><span>T3</span><div class="bar-fill t3-fill" style="width:${c.t3}%"></div><span>${c.t3}%</span></div>
+            <div class="bar-row"><span>T4</span><div class="bar-fill t4-fill" style="width:${c.t4}%"></div><span>${c.t4}%</span></div>
+          </div>
+          <div class="role-breakdown">
+            <h4>Role-wise Breakdown:</h4>
+            ${c.roles.map(r => `
+              <div class="role-row">
+                <span>${r.role}</span>
+                <span>${r.tier}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterCompanies(type, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (type === 'all') { renderCompanies(companies); return; }
+      const filtered = companies.filter(c => c.badgeClass === type);
+      renderCompanies(filtered);
+    }
+
+    // Render companies - wait for data.js to load
+    function initializeCompanies() {
+      if (typeof companies !== 'undefined' && companies.length > 0) {
+        console.log('✓ Companies loaded:', companies.length);
+        renderCompanies(companies);
+      } else {
+        console.log('⚠ Companies not loaded yet, retrying...');
+        setTimeout(initializeCompanies, 100);
+      }
+    }
+    
+    // Call after DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeCompanies);
+    } else {
+      initializeCompanies();
+    }
+  </script>
+</body>
+</html>

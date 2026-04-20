@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Companies — TierCheck</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo" onclick="window.location.href='index.html'">
+      <span class="logo-tc">TC</span>
+      <span class="logo-text">TierCheck</span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="college.html">College Search</a></li>
+      <li><a href="companies.html" class="active">Companies</a></li>
+      <li><a href="jobs.html">Jobs</a></li>
+      <li><a href="submit.html">Submit Data</a></li>
+    </ul>
+    <div class="nav-hamburger" onclick="toggleMenu()">☰</div>
+  </nav>
+
+  <div class="page-header">
+    <h1>🏢 Company <span class="yellow">Hiring Tiers</span></h1>
+    <p>See which tier each company hires from — with role-wise breakdown</p>
+  </div>
+
+  <div class="companies-section">
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all" onclick="handleFilter('all', this)">All</button>
+      <button class="filter-btn" data-filter="t1" onclick="handleFilter('t1', this)">Tier 1 Focus</button>
+      <button class="filter-btn" data-filter="t2" onclick="handleFilter('t2', this)">Tier 1 & 2</button>
+      <button class="filter-btn" data-filter="t3" onclick="handleFilter('t3', this)">Open for All</button>
+    </div>
+    <div class="loading" id="loading">Loading companies...</div>
+    <div class="companies-grid" id="companiesGrid"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-logo"><span class="logo-tc">TC</span> TierCheck</div>
+    <p>Know Your Chances. Save Your Time.</p>
+    <p class="footer-small">© 2024 TierCheck. All rights reserved.</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="data-api.js"></script>
+  <script src="companies.js"></script>
+</body>
+</html>

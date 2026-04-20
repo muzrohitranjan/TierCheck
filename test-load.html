@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Data.js Loading</title>
+</head>
+<body>
+  <h1>Testing data.js Load</h1>
+  <div id="status">Loading...</div>
+  <div id="result"></div>
+  
+  <script src="data.js?v=157-refresh-2024"></script>
+  <script>
+    setTimeout(() => {
+      let status = document.getElementById('status');
+      let result = document.getElementById('result');
+      
+      if (typeof companies !== 'undefined') {
+        status.innerHTML = '✓ data.js loaded successfully!';
+        result.innerHTML = `<p><strong>Companies found: ${companies.length}</strong></p>`;
+        result.innerHTML += '<h3>First 5 companies:</h3><ul>';
+        companies.slice(0, 5).forEach(c => {
+          result.innerHTML += `<li>${c.name} (${c.badge})</li>`;
+        });
+        result.innerHTML += '</ul>';
+      } else {
+        status.innerHTML = '✗ data.js did not load!';
+        result.innerHTML = `<p>companies is: ${typeof companies}</p>`;
+      }
+    }, 500);
+  </script>
+</body>
+</html>
