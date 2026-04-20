@@ -8,4 +8,5 @@ dist/
 build/
 backend/node_modules/
 backend/.env
+vercel.app/
 

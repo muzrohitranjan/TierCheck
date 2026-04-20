@@ -1,0 +1,31 @@
+{
+  "framework": null,
+  "buildCommand": "",
+  "installCommand": "",
+  "outputDirectory": ".",
+  "trailingSlash": false,
+  "cleanUrls": true,
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "ignore": [
+    "backend/**/*"
+  ],
+  "env": {
+    "API_BASE": "https://tiercheck-production.up.railway.app/api"
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=60"
+        }
+      ]
+    }
+  ]
+}
