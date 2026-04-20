@@ -46,6 +46,29 @@ console.log(`📡 PORT detected: ${PORT}`);
 
 
 // Routes
+app.get('/api/health', async (req, res) => {
+  try {
+    const [colleges, companies, jobs] = await Promise.all([
+      College.countDocuments(),
+      Company.countDocuments(),
+      Job.countDocuments()
+    ]);
+
+    res.json({
+      ok: true,
+      dbName: mongoose.connection.name,
+      readyState: mongoose.connection.readyState,
+      counts: {
+        colleges,
+        companies,
+        jobs
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/api/colleges', async (req, res) => {
   try {
     const { search } = req.query;
