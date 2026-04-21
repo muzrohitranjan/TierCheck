@@ -1,16 +1,11 @@
-// TierCheck Supabase Client - FIXED Loading Issue
-console.log("🔍 data-api.js loading... Checking config:" , window.SUPABASE_URL, window.SUPABASE_ANON_KEY ? "OK" : "MISSING");
+// TierCheck Supabase Client - EMPTY DATA + RLS DEBUG FIXED
+console.log("🔍 data-api.js START", window.SUPABASE_URL);
 
 if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
-  console.error("❌ Supabase config missing - using fallback data");
-  window.api = {
-    fetchColleges: async () => window.colleges || [],
-    fetchCompanies: async () => window.companies || [],
-    fetchJobs: async () => window.jobs || [],
-    submitData: async () => false
-  };
+  console.error("❌ NO CONFIG - FALLBACK");
+  window.api = { fetchColleges: () => window.colleges || [], fetchCompanies: () => window.companies || [], fetchJobs: () => window.jobs || [], submitData: () => false };
 } else {
-  console.log("✅ Supabase config OK - connecting...");
+  console.log("✅ CONFIG OK");
   
   const headers = {
     'apikey': window.SUPABASE_ANON_KEY,
@@ -20,49 +15,76 @@ if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
 
   const supabaseFetch = async (table) => {
     try {
-      const url = `${window.SUPABASE_URL}/rest/v1/${table}`;
+      // ALL DATA + DEBUG JSON
+      const url = `${window.SUPABASE_URL}/rest/v1/${table}?select=*`;
+      console.log(`🌐 Fetching ${table} →`, url);
       const res = await fetch(url, { headers });
-      if (!res.ok) throw new Error(res.status);
+      
+      console.log(`${table} status:`, res.status, res.statusText);
+      
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error(`❌ ${table} ERROR:`, res.status, errText);
+        throw new Error(errText);
+      }
+      
       const data = await res.json();
-      console.log(`✅ ${table}: ${data.length} items`);
+      console.log(`📊 RAW ${table} JSON:`, data);
+      console.log(`✅ ${table}: ${data.length} items`, data.slice(0,3)); // First 3
+      
       return data;
     } catch (err) {
-      console.error(`❌ ${table} failed:`, err);
+      console.error(`💥 ${table} FAILED:`, err);
       return [];
     }
   };
 
   window.api = {
     fetchColleges: async (search = '') => {
-      let colleges = await supabaseFetch('colleges');
-      if (search) colleges = colleges.filter(c => c.name.toLowerCase().includes(search));
-      return colleges.slice(0,20);
+      const colleges = await supabaseFetch('colleges');
+      let filtered = colleges;
+      if (search) filtered = colleges.filter(c => c.name?.toLowerCase().includes(search.toLowerCase()));
+      console.log(`Colleges ${search ? `filtered "${search}": "all"}: ${filtered.length}`);
+      return filtered.slice(0,100);
     },
+    
     fetchCompanies: async (filter = 'all') => {
-      let companies = await supabaseFetch('companies');
-      if (filter !== 'all') companies = companies.filter(c => c.tier === filter);
-      return companies;
+      const companies = await supabaseFetch('companies');
+      let filtered = companies;
+      if (filter !== 'all') {
+        filtered = companies.filter(c => c.tier === filter || c.badgeClass === filter);
+        console.log(`Companies filter "${filter}": ${filtered.length}/${companies.length}`);
+      } else {
+        console.log(`Companies ALL: ${filtered.length}`);
+      }
+      return filtered; // ALL FILTERED (no slice)
     },
+    
     fetchJobs: async (worth = 'all') => {
-      let jobs = await supabaseFetch('jobs');
-      if (worth !== 'all') jobs = jobs.filter(j => j.worth === worth);
-      return jobs;
+      const jobs = await supabaseFetch('jobs');
+      let filtered = jobs;
+      if (worth !== 'all') filtered = jobs.filter(j => j.worth === worth);
+      console.log(`Jobs ${worth}: ${filtered.length}/${jobs.length}`);
+      return filtered;
     },
+    
     submitData: async (data) => {
       try {
-        await fetch(`${window.SUPABASE_URL}/rest/v1/submissions`, {
+        const res = await fetch(`${window.SUPABASE_URL}/rest/v1/submissions`, {
           method: 'POST',
           headers,
           body: JSON.stringify([data])
         });
-        return true;
-      } catch {
+        console.log("Submit status:", res.status);
+        return res.ok;
+      } catch (err) {
+        console.error("Submit error:", err);
         return false;
       }
     }
   };
-  console.log("🚀 Supabase API ready!");
+  
+  console.log("🚀 FULL DEBUG Supabase client ready!");
 }
 
-console.log("✅ data-api.js loaded successfully");
-
+console.log("✅ data-api.js COMPLETE");
