@@ -70,9 +70,11 @@ if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
           desc: 'Default tier info'
         }
       }));
+      console.log(`ALL COLLEGES RAW (${colleges.length}) - No filters applied`);
       let filtered = colleges;
-      if (search) filtered = colleges.filter(c => c.name?.toLowerCase().includes(search));
-      console.log(`College results (${search || 'all'}): ${filtered.length}`);
+      // Search only - no other limits
+      if (search) filtered = colleges.filter(c => c.name?.toLowerCase().includes(search.toLowerCase()));
+      console.log(`College results (${search || 'all'}): ${filtered.length}/${colleges.length}`);
       return filtered;
     },
     
