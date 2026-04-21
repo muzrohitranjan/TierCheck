@@ -13,15 +13,15 @@ async function loadJobRoles() {
     // Normalize all company names
     const normalizedJobs = jobs.map(job => ({
       ...job,
-      companyLower: job.company?.toLowerCase().trim()
+      companyClean: job.company.trim().toLowerCase().replace(/\s+/g, '')
     }));
     
     // Group by normalized company name
     const grouped = {};
     normalizedJobs.forEach(job => {
-      if (job.companyLower) {
-        if (!grouped[job.companyLower]) grouped[job.companyLower] = [];
-        grouped[job.companyLower].push({
+      if (job.companyClean) {
+        if (!grouped[job.companyClean]) grouped[job.companyClean] = [];
+        grouped[job.companyClean].push({
           role: job.role,
           tier: job.tier || 'All Tiers'
         });
@@ -41,9 +41,9 @@ async function renderCompanies(companies) {
   console.log(`🎨 FULL DATA: ${companies.length} companies + JOBS matching`);
   
   companies.forEach(c => {
-    const companyLower = c.name.toLowerCase().trim();
-    const companyJobs = window.jobRoles[companyLower] || [];
-    console.log(`  ✅ ${c.name} (lower:${companyLower}) → ${companyJobs.length} jobs`);
+    const companyClean = c.name.trim().toLowerCase().replace(/\s+/g, '');
+    const companyJobs = window.jobRoles[companyClean] || [];
+    console.log(`  ✅ ${c.name} → ${companyJobs.length} jobs (${companyClean})`);
     
     c.jobRoles = companyJobs;
   });
