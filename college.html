@@ -82,7 +82,7 @@
         suggestionsBox.classList.add('hidden'); 
         return; 
       }
-      const matches = uniqueColleges().filter(c => c.name.toLowerCase().includes(input)).slice(0, 6);
+      const matches = uniqueColleges().filter(c => c.name.toLowerCase().includes(input));
       if (matches.length === 0) { 
         suggestionsBox.classList.add('hidden'); 
         return; 

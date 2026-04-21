@@ -1,8 +1,53 @@
+// Global job roles cache (companyName → [{role,tier}])
+window.jobRoles = {};
+
 function toggleMenu() {
   document.getElementById('navLinks').classList.toggle('open');
 }
 
+async function loadJobRoles() {
+  try {
+    const jobs = await window.api.fetchJobs('all');
+    console.log(`📊 FULL JOBS (${jobs.length}) for case-insensitive matching`);
+    
+    // Normalize all company names
+    const normalizedJobs = jobs.map(job => ({
+      ...job,
+      companyLower: job.company?.toLowerCase().trim()
+    }));
+    
+    // Group by normalized company name
+    const grouped = {};
+    normalizedJobs.forEach(job => {
+      if (job.companyLower) {
+        if (!grouped[job.companyLower]) grouped[job.companyLower] = [];
+        grouped[job.companyLower].push({
+          role: job.role,
+          tier: job.tier || 'All Tiers'
+        });
+      }
+    });
+    
+    window.jobRoles = grouped;
+    console.log(`✅ CASE-INSENSITIVE groups: ${Object.keys(grouped).length} companies`);
+    console.log('Sample:', Object.keys(grouped).slice(0,3));
+  } catch (err) {
+    console.error('Jobs load failed:', err);
+    window.jobRoles = {};
+  }
+}
+
 async function renderCompanies(companies) {
+  console.log(`🎨 FULL DATA: ${companies.length} companies + JOBS matching`);
+  
+  companies.forEach(c => {
+    const companyLower = c.name.toLowerCase().trim();
+    const companyJobs = window.jobRoles[companyLower] || [];
+    console.log(`  ✅ ${c.name} (lower:${companyLower}) → ${companyJobs.length} jobs`);
+    
+    c.jobRoles = companyJobs;
+  });
+  
   const loading = document.getElementById('loading');
   const grid = document.getElementById('companiesGrid');
 
@@ -20,12 +65,12 @@ async function renderCompanies(companies) {
       </div>
       <div class="role-breakdown">
         <h4>Role-wise Breakdown:</h4>
-        ${c.roles?.map(r => `
+${c.jobRoles?.length ? c.jobRoles.map(r => `
           <div class="role-row">
             <span>${r.role}</span>
             <span>${r.tier}</span>
           </div>
-        `).join('') || '<p>No roles data</p>'}
+        `).join('') : `<p>No job listings for ${c.name} | Check Jobs page</p>`}
       </div>
     </div>
   `).join('');
@@ -40,6 +85,7 @@ async function handleFilter(type, btn) {
 
 // Load on page ready
 document.addEventListener('DOMContentLoaded', async () => {
+  await loadJobRoles(); // Load jobs first
   // Initial load
   await handleFilter('all', document.querySelector('.filter-btn.active'));
 });

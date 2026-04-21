@@ -1,43 +1,30 @@
-# TierCheck Database Seeding - Progress Tracker
+# TierCheck Supabase Data Fix - Progress Tracker
 
-## Current Status: ✅ READY FOR PRODUCTION SEED
+## ✅ PLAN APPROVED - Step-by-step implementation
 
-**✅ Step 1:** TODO.md created  
-**✅ Step 2:** `backend/package.json` updated with `postdeploy: \"npm run seed\"`  
-**⚠️  Step 3:** Local seed test blocked (Windows CMD && issue)  
-**⏳ Steps 4-9:** Pending Railway execution  
+### 1. [x] Create this TODO.md
+### 2. [x] Update supabase-complete-setup.sql
+   - Enhance companies schema (add badgeClass, t1-4, roles JSONB)
+   - Add 100+ colleges from static data
+   - Add 20+ rich companies with t1/t2, roles array
+### 3. [] User: Run SQL in Supabase Dashboard → SQL Editor → Verify data
+   ```
+   SELECT COUNT(*) FROM colleges; -- Should be 100+
+   SELECT COUNT(*) FROM companies; -- 20+
+   SELECT * FROM companies LIMIT 3;
+   ```
+### 4. [x] Patch data-api.js
+   - Normalize tier casing/mapping
+   - Parse roles JSON
+   - Default percentages
+### 5. [x] Patch companies.js
+   - Safe rendering fallbacks
+### 6. [] Create colleges.js (if missing)
+### 7. [] Test companies.html 
+   ```
+   Open companies.html → Check console: "FETCHED companies: 20+"
+   All colleges visible, roles populated, filters work
+   ```
+### 8. [] [FINAL] attempt_completion
 
-**🚀 IMMEDIATE PRODUCTION FIX:**
-
-Run these **in your terminal**:
-
-```bash
-# PRODUCTION SEED (30 seconds fix)
-railway shell
-npm run seed
-```
-
-**VERIFY (browser):**
-- https://tiercheck-production.up.railway.app/api/companies (expect 5 companies)
-- https://tiercheck-production.up.railway.app/api/health (counts >0)
-
-**🚀 NEW RELIABLE FIX:**
-```
-git add backend/prod-seed.js backend/package.json
-git commit -m "fix: prod-seed.js direct node seed"
-git push
-```
-**Railway NOW runs:** `node prod-seed.js` (bypasses npm issues)
-
-**Expected Data:**
-| Colleges | Companies | Jobs |
-|----------|-----------|------|
-| 10       | 5         | 5    |
-
-## Quick Commands:
-```
-railway shell && npm run seed
-curl https://tiercheck-production.up.railway.app/api/companies
-```
-
-
+**🚀 Run SQL (Step 3) → Test companies.html → Fixed!**

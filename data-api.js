@@ -27,8 +27,10 @@ if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
   const headers = {
     'apikey': window.SUPABASE_ANON_KEY,
     'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Range': '0-999'  // Fetch ALL rows
   };
+  console.log('🚀 FULL DATA HEADERS with Range 0-999');
 
   const supabaseFetch = async (table) => {
     try {
@@ -42,7 +44,7 @@ if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
       console.log(`📄 RAW RESPONSE (${dataText.length} chars):`, dataText.substring(0,200));
       
       const data = JSON.parse(dataText);
-      console.log(`✅ FETCHED ${table}:`, data.length, "items");
+      console.log(`✅ FULL FETCHED ${table}:`, data.length, "items (Range 0-999)");
       console.log("FIRST ROW:", data[0] || "EMPTY");
       
       if (data.length === 0) {
@@ -59,7 +61,15 @@ if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
 
   window.api = {
     fetchColleges: async (search = '') => {
-      const colleges = await supabaseFetch('colleges');
+      let colleges = await supabaseFetch('colleges');
+      colleges = colleges.map(c => ({
+        ...c,
+        tierInfo: window.tierInfo?.[c.tier] || window.tierInfo?.[3] || {
+          label: `Tier ${c.tier}`,
+          color: `tier${c.tier}`,
+          desc: 'Default tier info'
+        }
+      }));
       let filtered = colleges;
       if (search) filtered = colleges.filter(c => c.name?.toLowerCase().includes(search));
       console.log(`College results (${search || 'all'}): ${filtered.length}`);
@@ -67,10 +77,52 @@ if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
     },
     
     fetchCompanies: async (filter = 'all') => {
-      const companies = await supabaseFetch('companies');
+      let companies = await supabaseFetch('companies');
+      
+      // NORMALIZE DATA - Fix Supabase → Frontend mismatch
+      companies = companies.map(c => {
+        // Tier normalization: 'T1'/'Tier 1' → 't1'
+        const normTier = (c.tier || '').toLowerCase()
+          .replace(/^tier /, 't')
+          .replace('t-1', 't1')
+          .replace('tier1', 't1')
+          .replace('t1-t2', 't2') // default to badgeClass
+          .substring(0,2);
+        
+        // Parse roles: JSON string → array
+        let roles = [];
+        try {
+          if (typeof c.roles === 'string') {
+            roles = JSON.parse(c.roles);
+          } else if (Array.isArray(c.roles)) {
+            roles = c.roles;
+          }
+        } catch(e) {
+          console.warn(`Roles parse failed for ${c.name}:`, e);
+        }
+        
+        // Defaults for bars
+        const safeCompany = {
+          ...c,
+          badgeClass: c.badgeClass || normTier,
+          tier: normTier,
+          t1: c.t1 || 25,
+          t2: c.t2 || 35,
+          t3: c.t3 || 30,
+          t4: c.t4 || 10,
+          roles: roles
+        };
+        console.log(`✅ Normalized ${c.name}: badgeClass=${safeCompany.badgeClass}, roles=${roles.length}`);
+        return safeCompany;
+      });
+      
       let filtered = companies;
       if (filter !== 'all') {
-        filtered = companies.filter(c => c.tier === filter || c.badgeClass === filter);
+        filtered = companies.filter(c => 
+          c.tier === filter || 
+          c.badgeClass === filter ||
+          c.tier.includes(filter)
+        );
       }
       console.log(`Company results (${filter}): ${filtered.length}/${companies.length}`);
       return filtered;
