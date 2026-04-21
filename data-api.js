@@ -1,12 +1,29 @@
-// TierCheck Supabase Client - EMPTY DATA + RLS DEBUG FIXED
-console.log("🔍 data-api.js START", window.SUPABASE_URL);
+// TierCheck Supabase Client - LOADING + EMPTY DATA FIXED
+console.log("🔍 data-api.js LOADING...", new Date().toLocaleTimeString());
 
 if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
-  console.error("❌ NO CONFIG - FALLBACK");
-  window.api = { fetchColleges: () => window.colleges || [], fetchCompanies: () => window.companies || [], fetchJobs: () => window.jobs || [], submitData: () => false };
+  console.error("❌ NO SUPABASE CONFIG - USING FALLBACK");
+  window.api = {
+    fetchColleges: async () => {
+      console.log("Using fallback colleges");
+      return window.colleges || [];
+    },
+    fetchCompanies: async () => {
+      console.log("Using fallback companies"); 
+      return window.companies || [];
+    },
+    fetchJobs: async () => {
+      console.log("Using fallback jobs");
+      return window.jobs || [];
+    },
+    submitData: async () => {
+      console.log("Fallback submit");
+      return false;
+    }
+  };
 } else {
-  console.log("✅ CONFIG OK");
-  
+  console.log("✅ SUPABASE CONFIG OK - FETCHING");
+
   const headers = {
     'apikey': window.SUPABASE_ANON_KEY,
     'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
@@ -15,26 +32,27 @@ if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
 
   const supabaseFetch = async (table) => {
     try {
-      // ALL DATA + DEBUG JSON
+      console.log(`🌐 SIMPLE QUERY ${table} → select=*`);
       const url = `${window.SUPABASE_URL}/rest/v1/${table}?select=*`;
-      console.log(`🌐 Fetching ${table} →`, url);
       const res = await fetch(url, { headers });
       
-      console.log(`${table} status:`, res.status, res.statusText);
+      console.log(`${table} STATUS:`, res.status, res.statusText);
       
-      if (!res.ok) {
-        const errText = await res.text();
-        console.error(`❌ ${table} ERROR:`, res.status, errText);
-        throw new Error(errText);
+      const dataText = await res.text();
+      console.log(`📄 RAW RESPONSE (${dataText.length} chars):`, dataText.substring(0,200));
+      
+      const data = JSON.parse(dataText);
+      console.log(`✅ FETCHED ${table}:`, data.length, "items");
+      console.log("FIRST ROW:", data[0] || "EMPTY");
+      
+      if (data.length === 0) {
+        console.warn(`⚠️ ${table} TABLE EMPTY - Check Supabase data`);
       }
       
-      const data = await res.json();
-      console.log(`📊 RAW ${table} JSON:`, data);
-      console.log(`✅ ${table}: ${data.length} items`, data.slice(0,3)); // First 3
-      
       return data;
-    } catch (err) {
-      console.error(`💥 ${table} FAILED:`, err);
+    } catch (error) {
+      console.error(`💥 ${table} ERROR:`, error);
+      console.error("FULL ERROR:", error.message);
       return [];
     }
   };
@@ -43,9 +61,9 @@ if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
     fetchColleges: async (search = '') => {
       const colleges = await supabaseFetch('colleges');
       let filtered = colleges;
-      if (search) filtered = colleges.filter(c => c.name?.toLowerCase().includes(search.toLowerCase()));
-      console.log(`Colleges ${search ? `filtered "${search}": "all"}: ${filtered.length}`);
-      return filtered.slice(0,100);
+      if (search) filtered = colleges.filter(c => c.name?.toLowerCase().includes(search));
+      console.log(`College results (${search || 'all'}): ${filtered.length}`);
+      return filtered;
     },
     
     fetchCompanies: async (filter = 'all') => {
@@ -53,18 +71,16 @@ if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
       let filtered = companies;
       if (filter !== 'all') {
         filtered = companies.filter(c => c.tier === filter || c.badgeClass === filter);
-        console.log(`Companies filter "${filter}": ${filtered.length}/${companies.length}`);
-      } else {
-        console.log(`Companies ALL: ${filtered.length}`);
       }
-      return filtered; // ALL FILTERED (no slice)
+      console.log(`Company results (${filter}): ${filtered.length}/${companies.length}`);
+      return filtered;
     },
     
     fetchJobs: async (worth = 'all') => {
       const jobs = await supabaseFetch('jobs');
       let filtered = jobs;
       if (worth !== 'all') filtered = jobs.filter(j => j.worth === worth);
-      console.log(`Jobs ${worth}: ${filtered.length}/${jobs.length}`);
+      console.log(`Job results (${worth}): ${filtered.length}/${jobs.length}`);
       return filtered;
     },
     
@@ -75,16 +91,24 @@ if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
           headers,
           body: JSON.stringify([data])
         });
-        console.log("Submit status:", res.status);
+        console.log("Submit:", res.status);
         return res.ok;
-      } catch (err) {
-        console.error("Submit error:", err);
+      } catch (error) {
+        console.error("Submit failed:", error);
         return false;
       }
     }
   };
-  
-  console.log("🚀 FULL DEBUG Supabase client ready!");
+  console.log("🚀 SUPABASE READY - Use window.api.fetchCompanies()");
 }
 
-console.log("✅ data-api.js COMPLETE");
+// Hide loading after 3s max
+setTimeout(() => {
+  const loading = document.querySelector('.loading');
+  if (loading && loading.style.display !== 'none') {
+    console.log("⏰ LOADING TIMEOUT - Hiding");
+    loading.style.display = 'none';
+  }
+}, 3000);
+
+console.log("✅ data-api.js COMPLETE - Check F12 for debug");
