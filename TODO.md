@@ -21,12 +21,13 @@ npm run seed
 - https://tiercheck-production.up.railway.app/api/companies (expect 5 companies)
 - https://tiercheck-production.up.railway.app/api/health (counts >0)
 
-**Forever Fix:**
-```bash
-git add .
-git commit -m \"fix: seed postdeploy hook for Railway\"
+**🚀 NEW RELIABLE FIX:**
+```
+git add backend/prod-seed.js backend/package.json
+git commit -m "fix: prod-seed.js direct node seed"
 git push
 ```
+**Railway NOW runs:** `node prod-seed.js` (bypasses npm issues)
 
 **Expected Data:**
 | Colleges | Companies | Jobs |

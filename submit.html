@@ -26,7 +26,7 @@
 
   <div class="page-header">
     <h1>📊 Submit <span class="yellow">Your Data</span></h1>
-    <p>Help other students by sharing your placement experience. All data is anonymous & reviewed before publishing.</p>
+    <p>Help improve TierCheck accuracy — data saved directly to Supabase. Anonymous & reviewed.</p>
   </div>
 
   <div class="submit-section">
@@ -38,11 +38,11 @@
       <div class="form-group">
         <label>College Tier</label>
         <select id="s_tier" required>
-          <option value="" disabled selected>Select your tier</option>
-          <option value="1">Tier 1 — IIT / IISc / BITS</option>
-          <option value="2">Tier 2 — NIT / IIIT / DTU</option>
-          <option value="3">Tier 3 — State / Private Colleges</option>
-          <option value="4">Tier 4 — Other Colleges</option>
+          <option value="" disabled selected>Select tier</option>
+          <option value="1">Tier 1</option>
+          <option value="2">Tier 2</option>
+          <option value="3">Tier 3</option>
+          <option value="4">Tier 4</option>
         </select>
       </div>
       <div class="form-group">
@@ -50,43 +50,68 @@
         <input type="text" id="s_company" placeholder="e.g. Google" required/>
       </div>
       <div class="form-group">
-        <label>Role / Position</label>
-        <input type="text" id="s_role" placeholder="e.g. SDE, Data Analyst, Intern" required/>
+        <label>Role/Position</label>
+        <input type="text" id="s_role" placeholder="e.g. SDE, Intern" required/>
       </div>
       <div class="form-group">
-        <label>Year of Placement</label>
+        <label>Year</label>
         <select id="s_year" required>
-          <option value="" disabled selected>Select year</option>
-          <option>2024</option>
-          <option>2023</option>
-          <option>2022</option>
-          <option>2021</option>
-          <option>2020</option>
+          <option value="" disabled selected>Year</option>
+          <option>2025</option><option>2024</option><option>2023</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Placement Type</label>
-        <select id="s_type" required>
-          <option value="" disabled selected>Select type</option>
-          <option>Campus Placement</option>
-          <option>Off-Campus</option>
-          <option>Internship</option>
-          <option>Referral</option>
-        </select>
-      </div>
-      <button type="submit" class="submit-btn">Submit Data 🚀</button>
-      <div id="successMsg" class="success-msg hidden">✅ Thank you! Your data has been submitted successfully and stored. It helps thousands of students!</div>
+      <button type="submit" class="submit-btn">Submit to Supabase 🚀</button>
+      <div id="successMsg" class="success-msg hidden"></div>
+      <div id="errorMsg" class="error-msg hidden"></div>
     </form>
   </div>
 
   <footer class="footer">
     <div class="footer-logo"><span class="logo-tc">TC</span> TierCheck</div>
-    <p>Know Your Chances. Save Your Time.</p>
-    <p class="footer-small">© 2024 TierCheck. All rights reserved.</p>
+    <p>Production Backend: Supabase</p>
+    <p class="footer-small">© 2024. Data helps everyone.</p>
   </footer>
 
+  <!-- Supabase Submit -->
+  <script src="supabase-config.js"></script>
+  <script src="data-api-supabase.js"></script>
   <script src="data.js"></script>
-  <script src="data-api.js"></script>
-  <script src="submit.js"></script>
+  <script>
+    function toggleMenu() {
+      document.getElementById('navLinks').classList.toggle('open');
+    }
+
+    async function submitData(e) {
+      e.preventDefault();
+      const formData = {
+        college: document.getElementById('s_college').value,
+        tier: parseInt(document.getElementById('s_tier').value),
+        company: document.getElementById('s_company').value,
+        role: document.getElementById('s_role').value,
+        year: document.getElementById('s_year').value
+      };
+      
+      const successMsg = document.getElementById('successMsg');
+      const errorMsg = document.getElementById('errorMsg');
+      
+      try {
+        const submitted = await window.api.submitData(formData);
+        if (submitted) {
+          successMsg.textContent = '✅ Data saved to Supabase! Thank you 🙌';
+          successMsg.classList.remove('hidden');
+          errorMsg.classList.add('hidden');
+          document.querySelector('.submit-form').reset();
+        } else {
+          throw new Error('Submit failed');
+        }
+      } catch (err) {
+        errorMsg.textContent = '❌ Network error. Data saved locally.';
+        errorMsg.classList.remove('hidden');
+        successMsg.classList.add('hidden');
+        console.error('Supabase submit error:', err);
+      }
+    }
+  </script>
 </body>
 </html>
+

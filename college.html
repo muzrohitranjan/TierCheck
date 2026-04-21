@@ -26,7 +26,7 @@
 
   <div class="page-header">
     <h1>🎓 College <span class="yellow">Tier Finder</span></h1>
-    <p>Search your college and instantly know your tier & which companies hire from you</p>
+    <p>Search 1000+ colleges ranked by tier — data powered by Supabase</p>
   </div>
 
   <div class="college-section">
@@ -39,24 +39,56 @@
     <div id="collegeResult" class="hidden"></div>
   </div>
 
+  <footer class="footer">
+    <div class="footer-logo"><span class="logo-tc">TC</span> TierCheck</div>
+    <p>Know Your Chances. Save Your Time.</p>
+    <p class="footer-small">© 2024 TierCheck. Supabase Production Backend.</p>
+  </footer>
+
+  <!-- Supabase Stack -->
+  <script src="supabase-config.js"></script>
+  <script src="data-api-supabase.js"></script>
   <script src="data.js"></script>
   <script>
     function toggleMenu() {
       document.getElementById('navLinks').classList.toggle('open');
     }
 
-    const uniqueColleges = colleges.filter((c, i, arr) =>
+    let collegesCache = []; // Will load from Supabase
+
+    async function loadColleges() {
+      try {
+        collegesCache = await window.api.fetchColleges('');
+        console.log(`Loaded ${collegesCache.length} colleges from Supabase`);
+      } catch (e) {
+        collegesCache = window.colleges || [];
+        console.log(`Using fallback colleges (${collegesCache.length})`);
+      }
+    }
+
+    // Load on start
+    loadColleges().then(() => {
+      console.log('College search ready');
+    });
+
+    const uniqueColleges = () => collegesCache.filter((c, i, arr) =>
       arr.findIndex(x => x.name.toLowerCase() === c.name.toLowerCase()) === i
     );
 
     function liveSearchCollege() {
       const input = document.getElementById('collegeInput').value.toLowerCase();
       const suggestionsBox = document.getElementById('suggestions');
-      if (!input || input.length < 2) { suggestionsBox.classList.add('hidden'); return; }
-      const matches = uniqueColleges.filter(c => c.name.toLowerCase().includes(input)).slice(0, 6);
-      if (matches.length === 0) { suggestionsBox.classList.add('hidden'); return; }
+      if (!input || input.length < 2) { 
+        suggestionsBox.classList.add('hidden'); 
+        return; 
+      }
+      const matches = uniqueColleges().filter(c => c.name.toLowerCase().includes(input)).slice(0, 6);
+      if (matches.length === 0) { 
+        suggestionsBox.classList.add('hidden'); 
+        return; 
+      }
       suggestionsBox.innerHTML = matches.map(c =>
-        `<div data-name="${c.name.replace(/"/g, '&quot;')}" onclick="selectCollege(this.dataset.name)">${c.name}</div>`
+        `<div data-name="${c.name.replace(/"/g, '"')}" onclick="selectCollege(this.dataset.name)">${c.name} (${c.tierInfo?.label || 'Tier ' + c.tier})</div>`
       ).join('');
       suggestionsBox.classList.remove('hidden');
     }
@@ -67,29 +99,36 @@
       searchCollegePage();
     }
 
-    function searchCollegePage() {
+    async function searchCollegePage() {
       const input = document.getElementById('collegeInput').value.trim().toLowerCase();
       const resultDiv = document.getElementById('collegeResult');
       if (!input) return;
-      const found = uniqueColleges.find(c => c.name.toLowerCase().includes(input));
+      
+      const colleges = await window.api.fetchColleges(input);
+      const found = colleges[0];
+      
       if (!found) {
-        resultDiv.className = 'college-result-box';
-        resultDiv.innerHTML = `<h2>College not found</h2><p>Try a different name or spelling.</p>`;
+        resultDiv.className = 'college-result-box error';
+        resultDiv.innerHTML = `<h2>College not found</h2><p>Try a different spelling or name. ${colleges.length} similar colleges found.</p>`;
         resultDiv.classList.remove('hidden');
         return;
       }
-      const info = tierInfo[found.tier];
-      const companyTags = info.companies.map(c =>
-        `<span class="mini-company-tag" onclick="window.location.href='companies.html'">${c}</span>`
-      ).join('');
+      
+      const info = found.tierInfo || window.tierInfo[found.tier] || window.tierInfo[3];
       resultDiv.className = 'college-result-box';
       resultDiv.innerHTML = `
         <h2>${found.name}</h2>
-        <div class="big-tier">${info.label}</div>
+        <div class="big-tier ${info.color}">${info.label}</div>
         <p>${info.desc}</p>
         <div class="companies-for-tier">
-          <h3>Companies that hire from your tier:</h3>
-          <div class="mini-company-list">${companyTags}</div>
+          <h3>Companies hiring from your tier:</h3>
+          <div class="mini-company-list">
+            ${info.companies.slice(0,8).map(c => `<span class="mini-company-tag">${c}</span>`).join('')}
+          </div>
+        </div>
+        <div style="margin-top:20px">
+          <a href="companies.html" class="btn">See All Companies →</a>
+          <a href="jobs.html" class="btn secondary">Live Jobs →</a>
         </div>
       `;
       resultDiv.classList.remove('hidden');
@@ -101,3 +140,4 @@
   </script>
 </body>
 </html>
+

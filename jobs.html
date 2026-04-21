@@ -26,7 +26,7 @@
 
   <div class="page-header">
     <h1>💼 Job <span class="yellow">Listings</span></h1>
-    <p>Every job shows which tier it's for — so you know if it's worth applying</p>
+    <p>Every job shows which tier it's for — loaded live from Supabase</p>
   </div>
 
   <div class="jobs-section">
@@ -36,18 +36,22 @@
       <button class="filter-btn" data-filter="maybe" onclick="filterJobs('maybe', this)">⚠️ Maybe</button>
       <button class="filter-btn" data-filter="no" onclick="filterJobs('no', this)">❌ Likely Not</button>
     </div>
-    <div class="loading" id="loading">Loading jobs...</div>
+    <div class="loading" id="loading">Loading jobs from Supabase...</div>
     <div class="jobs-list" id="jobsList"></div>
   </div>
 
   <footer class="footer">
     <div class="footer-logo"><span class="logo-tc">TC</span> TierCheck</div>
     <p>Know Your Chances. Save Your Time.</p>
-    <p class="footer-small">© 2024 TierCheck. All rights reserved.</p>
+    <p class="footer-small">© 2024 TierCheck. Supabase Backend. All rights reserved.</p>
   </footer>
 
+  <!-- Supabase Migration Stack -->
+  <script src="supabase-config.js"></script>
+  <script src="data-api-supabase.js"></script>
+  <!-- Fallback -->
   <script src="data.js"></script>
-  <script src="data-api.js"></script>
   <script src="jobs.js"></script>
 </body>
 </html>
+

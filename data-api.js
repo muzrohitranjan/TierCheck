@@ -1,40 +1,72 @@
-const API_BASE = 'https://tiercheck-production.up.railway.app/api';
+// TierCheck Supabase API Client - Backend FREE
+// Loads colleges, companies, jobs from your Supabase tables
 
-const apiFetch = async (endpoint, options = {}) => {
+const headers = {
+  'apikey': window.SUPABASE_ANON_KEY,
+  'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
+  'Content-Type': 'application/json'
+};
+
+const supabaseFetch = async (table, extraQuery = '') => {
   try {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
-      headers: { 'Content-Type': 'application/json' },
-      ...options
-    });
-    if (!res.ok) throw new Error(`API error: ${res.status}`);
-    return await res.json();
-  } catch (err) {
-    console.error(`API fetch failed for ${endpoint}:`, err);
-    // Fallback to static data if available
-    if (endpoint === '/colleges' && window.colleges) {
-      return window.colleges.slice(0,20).map(c => ({
-        ...c,
-        tierInfo: window.tierInfo?.[c.tier] || window.tierInfo?.[3]
-      }));
+    const url = `${window.SUPABASE_URL}/rest/v1/${table}${extraQuery}`;
+    const response = await fetch(url, { headers });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    if (endpoint === '/companies' && window.companies) return window.companies;
-    if (endpoint === '/jobs' && window.jobs) return window.jobs;
-    return [];
+    
+    const data = await response.json();
+    console.log(`✅ ${table}: ${data.length} items`);
+    return data;
+  } catch (error) {
+    console.error(`❌ Supabase ${table} failed:`, error);
+    return []; // Never breaks UI
   }
 };
 
-const fetchColleges = async (search = '') => {
-  const colleges = await apiFetch(`/colleges?search=${encodeURIComponent(search)}`);
-  // Augment with tierInfo for UI
-  return colleges.map(c => ({
-    ...c,
-    tierInfo: window.tierInfo[c.tier] || window.tierInfo[3]
-  }));
+// Production API Functions
+window.api = {
+  async fetchColleges(search = '') {
+    let colleges = await supabaseFetch('colleges');
+    if (search) {
+      colleges = colleges.filter(c => 
+        c.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    return colleges.slice(0, 20);
+  },
+
+  async fetchCompanies(filter = 'all') {
+    let companies = await supabaseFetch('companies');
+    if (filter !== 'all') {
+      companies = companies.filter(c => c.tier === filter);
+    }
+    return companies;
+  },
+
+  async fetchJobs(worth = 'all') {
+    let jobs = await supabaseFetch('jobs');
+    if (worth !== 'all') {
+      jobs = jobs.filter(j => j.worth === worth);
+    }
+    return jobs;
+  },
+
+  async submitData(data) {
+    try {
+      const response = await fetch(`${window.SUPABASE_URL}/rest/v1/submissions`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify([data])
+      });
+      return response.ok;
+    } catch {
+      console.error('Submit failed');
+      return false;
+    }
+  }
 };
 
-const fetchCompanies = async (filter = 'all') => apiFetch(`/companies?filter=${filter}`);
-const fetchJobs = async (worth = 'all') => apiFetch(`/jobs?worth=${worth}`);
-const submitData = async (data) => apiFetch('/submit', { method: 'POST', body: JSON.stringify(data) });
-
-window.api = { fetchColleges, fetchCompanies, fetchJobs, submitData };
+console.log('🚀 TierCheck Supabase API Ready - No Backend Needed!');
 

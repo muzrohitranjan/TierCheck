@@ -1,4 +1,5 @@
-// window.colleges = [\n  // { name: "IIT Madras", tier: 1 },
+window.colleges = [
+  { name: "IIT Madras", tier: 1 },
   { name: "IIT Delhi", tier: 1 },
   { name: "IIT Bombay", tier: 1 },
   { name: "IIT Kanpur", tier: 1 },
@@ -847,7 +848,10 @@ window.tierInfo = {
   }
 };
 
-// window.companies = [\n  // {\n    // name: "Google", badge: "Mostly Tier 1", badgeClass: "t1",\n    // t1: 80, t2: 15, t3: 5, t4: 0,
+window.companies = [
+  {
+    name: "Google", badge: "Mostly Tier 1", badgeClass: "t1",
+    t1: 80, t2: 15, t3: 5, t4: 0,
     roles: [
       { role: "SDE", tier: "Tier 1 Only" },
       { role: "Data Analyst", tier: "Tier 1 & 2" },
