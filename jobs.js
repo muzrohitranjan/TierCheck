@@ -17,7 +17,7 @@ async function renderJobs(jobs) {
   jobsList.innerHTML = jobs.map(j => `
     <div class="job-card">
       <div class="job-info">
-        <h3>${j.role} — ${j.company}</h3>
+        <h3>${j.role} at ${j.company}</h3>
         <p>📍 ${j.location} &nbsp;|&nbsp; 🎯 Hiring Tier: <strong>${j.tier}</strong></p>
       </div>
       <div class="job-right">
