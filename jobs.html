@@ -11,8 +11,8 @@
 
   <nav class="navbar">
     <div class="nav-logo" onclick="window.location.href='index.html'">
-      <span class="logo-tc">TC</span>
-      <span class="logo-text">TierCheck</span>
+          <img src="logo.png" alt="TierCheck Logo" class="footer-logo-img">
+      <span class="brand-text"><span class="logo-tier">Tier</span><span class="logo-check">Check</span></span>
     </div>
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
@@ -25,23 +25,23 @@
   </nav>
 
   <div class="page-header">
-    <h1>💼 Job <span class="yellow">Listings</span></h1>
-Every job shows which tier it's for, loaded live from Supabase</p>
+    <h1> Job <span class="yellow">Listings</span></h1>
+<p>Explore relevant job opportunities with clear tier-based insights to help you apply smarter and save time</p>
   </div>
 
   <div class="jobs-section">
     <div class="filter-bar">
       <button class="filter-btn active" data-filter="all" onclick="filterJobs('all', this)">All Jobs</button>
-      <button class="filter-btn" data-filter="yes" onclick="filterJobs('yes', this)">✅ Worth Applying</button>
-      <button class="filter-btn" data-filter="maybe" onclick="filterJobs('maybe', this)">⚠️ Maybe</button>
-      <button class="filter-btn" data-filter="no" onclick="filterJobs('no', this)">❌ Likely Not</button>
+      <button class="filter-btn" data-filter="yes" onclick="filterJobs('yes', this)"> Worth Applying</button>
+      <button class="filter-btn" data-filter="maybe" onclick="filterJobs('maybe', this)"> Maybe</button>
+      <button class="filter-btn" data-filter="no" onclick="filterJobs('no', this)"> Likely Not</button>
     </div>
     <div class="loading" id="loading">Loading jobs from Supabase...</div>
     <div class="jobs-list" id="jobsList"></div>
   </div>
 
   <footer class="footer">
-    <div class="footer-logo"><span class="logo-tc">TC</span> TierCheck</div>
+    <img src="logo.png" alt="TierCheck Logo" class="footer-logo-img">
     <p>Know Your Chances. Save Your Time.</p>
     <p class="footer-small">2025 TierCheck<br>All rights reserved<br></p>
   </footer>

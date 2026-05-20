@@ -358,6 +358,21 @@ body {
   padding: 40px 20px;
   border-top: 1px solid #1a1a3e;
 }
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+}
+
+.footer-logo-img {
+  width: 50px;
+  height: auto;
+}
+
+.footer-text {
+  text-align: center;
+}
 
 .footer-logo {
   font-size: 22px;
@@ -386,7 +401,13 @@ body {
   text-align: center;
   background: radial-gradient(ellipse at top, #1a2a6c 0%, #0a0a1a 70%);
 }
+.logo-tier {
+  color: #ffffff;
+}
 
+.logo-check {
+  color: #ff9500;
+}
 .page-header h1 { font-size: 40px; font-weight: 800; margin-bottom: 12px; }
 .page-header p { font-size: 16px; color: #aab0c6; }
 
