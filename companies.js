@@ -8,7 +8,7 @@ function toggleMenu() {
 async function loadJobRoles() {
   try {
     const jobs = await window.api.fetchJobs('all');
-    console.log(`📊 FULL JOBS (${jobs.length}) for case-insensitive matching`);
+    console.log('FULL JOBS (${jobs.length}) for case-insensitive matching');
     
     // Normalize all company names
     const normalizedJobs = jobs.map(job => ({
@@ -38,6 +38,8 @@ async function loadJobRoles() {
 }
 
 async function renderCompanies(companies) {
+  console.log(`🎨 RENDERING ${companies.length} companies`);
+  console.log("First 3 companies:", companies.slice(0,3).map(c => ({name: c.name, badgeClass: c.badgeClass, tier: c.tier})));
   console.log(`🎨 FULL DATA: ${companies.length} companies + JOBS matching`);
   
   companies.forEach(c => {

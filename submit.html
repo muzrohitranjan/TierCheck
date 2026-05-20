@@ -25,8 +25,8 @@
   </nav>
 
   <div class="page-header">
-    <h1>📊 Submit <span class="yellow">Your Data</span></h1>
-Help improve TierCheck accuracy. Data saved directly to Supabase. Anonymous and reviewed.</p>
+    <h1>Submit <span class="yellow">Your Data</span></h1>
+<p></p>Help improve TierCheck accuracy. Data saved directly to Supabase. Anonymous and reviewed.</p>
   </div>
 
   <div class="submit-section">
@@ -60,7 +60,7 @@ Help improve TierCheck accuracy. Data saved directly to Supabase. Anonymous and 
           <option>2025</option><option>2024</option><option>2023</option>
         </select>
       </div>
-      <button type="submit" class="submit-btn">Submit to Supabase 🚀</button>
+      <button type="submit" class="submit-btn">Submit to Supabase</button>
       <div id="successMsg" class="success-msg hidden"></div>
       <div id="errorMsg" class="error-msg hidden"></div>
     </form>
@@ -68,8 +68,8 @@ Help improve TierCheck accuracy. Data saved directly to Supabase. Anonymous and 
 
   <footer class="footer">
     <div class="footer-logo"><span class="logo-tc">TC</span> TierCheck</div>
-    <p>Production Backend: Supabase</p>
-    <p class="footer-small">© 2024. Data helps everyone.</p>
+   <p>Know Your Chances. Save Your Time.</p>
+    <p class="footer-small">2025 Data helps everyone<br>All rights reserved<br></p>
   </footer>
 
   <!-- Supabase Submit -->
@@ -97,7 +97,7 @@ Help improve TierCheck accuracy. Data saved directly to Supabase. Anonymous and 
       try {
         const submitted = await window.api.submitData(formData);
         if (submitted) {
-          successMsg.textContent = '✅ Data saved to Supabase! Thank you 🙌';
+          successMsg.textContent = 'Data saved to Supabase! Thank you';
           successMsg.classList.remove('hidden');
           errorMsg.classList.add('hidden');
           document.querySelector('.submit-form').reset();
@@ -105,7 +105,7 @@ Help improve TierCheck accuracy. Data saved directly to Supabase. Anonymous and 
           throw new Error('Submit failed');
         }
       } catch (err) {
-        errorMsg.textContent = '❌ Network error. Data saved locally.';
+        errorMsg.textContent = 'Network error. Data saved locally.';
         errorMsg.classList.remove('hidden');
         successMsg.classList.add('hidden');
         console.error('Supabase submit error:', err);

@@ -170,7 +170,8 @@ if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
     }
   };
 
-  const getAllCoreData = async () => {
+    const getAllCoreData = async () => {
+      console.log("🔍 RAW DATA from Supabase (getAllCoreData):");
     const [companies, jobs, colleges] = await Promise.all([
       supabaseFetchAll("companies"),
       supabaseFetchAll("jobs"),
@@ -266,6 +267,8 @@ if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
         );
       }
 
+      console.log(`🎯 FILTER ${filter.toUpperCase()}: FINAL ${filtered.length}/${normalizedCompanies.length} companies`);
+console.log("Sample filtered:", filtered.slice(0,3).map(c=>c.name));
       console.log(`Company results (${filter}): ${filtered.length}/${normalizedCompanies.length}`);
       return filtered;
     },

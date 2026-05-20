@@ -1,30 +1,21 @@
-# TierCheck Supabase Data Fix - Progress Tracker
+# TierCheck Frontend Filter Fix - PLAN APPROVED
 
-## ✅ PLAN APPROVED - Step-by-step implementation
+## Current Status
+- Debug logs added to data-api.js & companies.js
+- Awaiting console logs from user test
 
-### 1. [x] Create this TODO.md
-### 2. [x] Update supabase-complete-setup.sql
-   - Enhance companies schema (add badgeClass, t1-4, roles JSONB)
-   - Add 100+ colleges from static data
-   - Add 20+ rich companies with t1/t2, roles array
-### 3. [] User: Run SQL in Supabase Dashboard → SQL Editor → Verify data
-   ```
-   SELECT COUNT(*) FROM colleges; -- Should be 100+
-   SELECT COUNT(*) FROM companies; -- 20+
-   SELECT * FROM companies LIMIT 3;
-   ```
-### 4. [x] Patch data-api.js
-   - Normalize tier casing/mapping
-   - Parse roles JSON
-   - Default percentages
-### 5. [x] Patch companies.js
-   - Safe rendering fallbacks
-### 6. [] Create colleges.js (if missing)
-### 7. [] Test companies.html 
-   ```
-   Open companies.html → Check console: "FETCHED companies: 20+"
-   All colleges visible, roles populated, filters work
-   ```
-### 8. [] [FINAL] attempt_completion
+## Steps Completed [x]
+1. [x] Added debug logs (RAW data, FILTER results, RENDER input)
+2. [x] Created this TODO.md
 
-**🚀 Run SQL (Step 3) → Test companies.html → Fixed!**
+## Next Steps []
+3. [ ] User runs test: companies.html → F12 Console → Paste logs
+4. [ ] Diagnose CASE (A: Data | B: Filter | C: Render)
+5. [ ] Fix root cause
+6. [ ] Update TODO.md with progress
+7. [ ] Test all filters work
+8. [ ] attempt_completion
+
+## Current Theory
+Likely CASE A: Supabase `companies` table has only 1 row
+→ Solution: User runs supabase-complete-setup.sql seed
